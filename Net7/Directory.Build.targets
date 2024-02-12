@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <BinariesFolder>..\sonar-analyzers</BinariesFolder>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Add the SonarAnalyzer analyzer DLLs -->
+    <Analyzer Include="$(BinariesFolder)\SonarAnalyzer*.dll" />
+    <Analyzer Include="$(BinariesFolder)\Google.Protobuf.dll" />
+  </ItemGroup>
+</Project>

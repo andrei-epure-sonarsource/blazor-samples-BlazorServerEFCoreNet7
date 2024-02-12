@@ -1,7 +1,8 @@
-﻿@page "/View/{ContactId:int}"
-
+﻿@page "/View/{ContactId:long}"
+@rendermode InteractiveServer
+@using BlazorWebAppEFCore.Grid
+@using BlazorWebAppEFCore.Data
 @using Microsoft.EntityFrameworkCore
-
 @inject IDbContextFactory<ContactContext> DbFactory
 @inject IPageHelper PageHelper
 @inject EditSuccess EditSuccessState
@@ -39,7 +40,9 @@ else
         </a>
         @if (!Deleted)
         {
-            <a class="btn btn-primary" href="edit/@Contact.Id" title="Edit">Edit</a><span>&nbsp;</span>
+            <a class="btn btn-primary" href="edit/@Contact.Id" title="Edit">Edit</a>
+
+            <span>&nbsp;</span>
             @if (!ShowConfirmation)
             {
                 <button class="btn btn-danger" @onclick="@(() => { ShowConfirmation = true; EditSuccess = false; })">Delete</button>
@@ -59,52 +62,37 @@ else
 }
 
 @code {
-    /// <summary>
-    /// Tracking of asynchronous calls.
-    /// </summary>
+    // Tracking of asynchronous calls.
     private bool Loading;
 
-    /// <summary>
-    /// Id from route of contact.
-    /// </summary>
+    // Id from route of contact.
     [Parameter]
     public int ContactId { get; set; }
 
-    /// <summary>
-    /// Navigation check.
-    /// </summary>
+    [Parameter]
+    //[SupplyParameterFromQuery]
+    public ContactFilterColumns ShowOnly { get; set; }
+
+    // Navigation check.
     private int _lastContactId;
 
-    /// <summary>
-    /// True with redirect from successful edit.
-    /// </summary>
+    // True with redirect from successful edit.
     [Parameter]
     public bool EditSuccess { get; set; }
 
-    /// <summary>
-    /// Contact entity.
-    /// </summary>
+    // Contact entity.
     private Contact? Contact { get; set; }
 
-    /// <summary>
-    /// Set to true when not found.
-    /// </summary>
+    // Set to true when not found.
     private bool NotFound = false;
 
-    /// <summary>
-    /// Set to true when delete is requested.
-    /// </summary>
+    // Set to true when delete is requested.
     private bool ShowConfirmation = false;
 
-    /// <summary>
-    /// Set to true when delete is successful
-    /// </summary>
+    // Set to true when delete is successful.
     private bool Deleted = false;
 
-    /// <summary>
-    /// Navigated
-    /// </summary>
-    /// <returns>Task</returns>
+    // Navigated
     protected override async Task OnParametersSetAsync()
     {
         if (_lastContactId != ContactId)
@@ -117,11 +105,8 @@ else
         await base.OnParametersSetAsync();
     }
 
-    /// <summary>
-    /// Confirm deletion
-    /// </summary>
-    /// <param name="result">True when user confirmed</param>
-    /// <returns>Task</returns>
+    // Confirm deletion.
+    // result is True when user confirmed.
     private async Task ConfirmAsync(bool result)
     {
         if (result)
@@ -135,15 +120,12 @@ else
         }
     }
 
-    /// <summary>
-    /// Loads the contact
-    /// </summary>
-    /// <returns>Task</returns>
+    // Loads the contact.
     private async Task LoadContactAsync()
     {
         if (Loading)
         {
-            return; //avoid concurrent requests
+            return; //avoid concurrent requests.
         }
 
         NotFound = false;
@@ -169,15 +151,13 @@ else
         Loading = false;
     }
 
-    /// <summary>
-    /// Deletes the contact.
-    /// </summary>
-    /// <returns>Task</returns>
+    // Deletes the contact.
     private async Task DeleteAsync()
     {
         if (Loading)
         {
-            return; // avoid concurrent requests
+            // Avoid concurrent requests.
+            return;
         }
 
         Loading = true;
@@ -198,14 +178,14 @@ else
             else
             {
                 Loading = false;
-                // show not found
+                // Show not found.
                 await LoadContactAsync();
             }
         }
         else
         {
             Loading = false;
-            // show not found
+            // Show not found.
             await LoadContactAsync();
         }
     }

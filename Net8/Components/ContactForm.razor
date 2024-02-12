@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms;
 
 <h1>@Mode Contact</h1>
+
 <hr />
 @if (Contact is not null)
 {
@@ -78,63 +79,44 @@
         </button>
     </EditForm>
 }
+
 @code {
-    /// <summary>
-    /// Let parent handle result of validation.
-    /// </summary>
+    // Let parent handle result of validation.
     [Parameter]
     public EventCallback<bool> ValidationResult { get; set; }
 
-    /// <summary>
-    /// Let parent handle what to do on cancel.
-    /// </summary>
+    // Let parent handle what to do on cancel.
     [Parameter]
     public EventCallback CancelRequest { get; set; }
 
-    /// <summary>
-    /// <c>True</c> if add mode.
-    /// </summary>
+    // True if add mode.
     [Parameter]
+    [SupplyParameterFromQuery]
     public bool IsAdd { get; set; }
 
-    /// <summary>
-    /// The <see cref="Contact"/> to upsert.
-    /// </summary>
+    // The Contact to upsert.
     [Parameter]
     public Contact? Contact { get; set; }
 
-    /// <summary>
-    /// The database version of <see cref="Contact"/> if a concurrency issue
-    /// exists.
-    /// </summary>
+    // The database version of Contact if a concurrency issue.
     [Parameter]
     public Contact? DbContact { get; set; }
 
-    /// <summary>
-    /// Prevent multiple asynchronous operations at the same time.
-    /// </summary>
+    // Prevent multiple asynchronous operations at the same time.
     [Parameter]
     public bool Busy { get; set; }
 
-    /// <summary>
-    /// Mode.
-    /// </summary>
+    // Mode.
     private string Mode => IsAdd ? "Add" : "Edit";
 
-    /// <summary>
-    /// Ask to cancel.
-    /// </summary>
-    /// <returns>A <see cref="Task"/>.</returns>
+    // Ask to cancel.
     private Task CancelAsync()
     {
         return CancelRequest.InvokeAsync(null);
     }
 
-    /// <summary>
-    /// Handle form submission request.
-    /// </summary>
-    /// <param name="isValid"><c>True</c> when field validation passed.</param>
-    /// <returns>A <see cref="Task"/>.</returns>
+    // Handle form submission request.
+    // isValid: True when field validation passed.
     private Task HandleSubmitAsync(bool isValid)
     {
         return ValidationResult.InvokeAsync(isValid);
